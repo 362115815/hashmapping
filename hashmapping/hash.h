@@ -1,5 +1,6 @@
 #pragma once
 #include<string>
+#include<vector>
 using namespace std;
 class CPosition//kmerŒª÷√¿‡
 {
@@ -50,3 +51,6 @@ int kmerInsert(char kemr[], long curpos, CHashTable ht[]);
 long calculatePos(char seq[], int length);
 unsigned int BKDRHash(char *str);
 CSubHT * getpPos(CSubHT * subHT, char seq[], int length);
+fstream * sort(char *filepath);
+vector<string>  quicksort(vector<string>  &kmers,  int begin,  int end);
+void merge(vector<string> &kmers1, vector<string> &kmers2, vector<string> &kmers3);

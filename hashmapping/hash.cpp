@@ -6,6 +6,7 @@
 #include <iostream>
 #include<cmath>
 #include<cstring>
+#include<vector>
 using namespace std;
 
 int createHashTable(const char * filename, CHashTable ht[], long length)
@@ -290,4 +291,141 @@ CSubHT * getpPos(CSubHT * subHT, char seq[], int length)
 
 
 	return	NULL;
+}
+
+
+
+//对文件中的kmer进行排序
+fstream * sort(char *filepath)
+{
+	vector<string> kmers;
+	vector<string>kmers1;
+	vector<string>kmers2;
+
+	//long pos[N];
+	ifstream fin(filepath);
+	for (int i = 0; i <1000; i++)
+	{
+		char ch[60];
+		fin.getline(ch, 60);
+		
+		kmers.push_back(ch);
+	}
+	quicksort(kmers, 0, kmers.size());
+
+
+	for (int i = 0; i <1000; i++)
+	{
+		char ch[60];
+		fin.getline(ch, 60);
+
+		kmers1.push_back(ch);
+	}
+
+	quicksort(kmers1, 0, kmers1.size());
+	
+
+	for (int i = 0; i <1000; i++)
+	{
+		char ch[60];
+		fin.getline(ch, 60);
+
+		kmers2.push_back(ch);
+	}
+
+	quicksort(kmers2, 0, kmers2.size());
+
+	merge(kmers, kmers1);
+
+
+	ofstream fout("D:\\result.txt");
+
+	for (int i = 0; i< kmers.size(); i++)
+	{
+		
+		fout << kmers[i] << endl;
+		
+	}
+	fout.close();
+ 	cout << kmers.size();
+	return NULL;
+}
+
+
+//快速排序
+
+vector<string>  quicksort(vector<string>  &kmers, int begin, int end)
+{
+	if (begin < end)
+	{
+		
+		int n = rand() % (end-begin) + begin;
+		string temp=kmers[n];
+
+		int i = begin;
+		int j = end - 1;
+		while (i<j)
+		{
+			//先从右侧开始找
+			while (i < j&& temp.compare(0,21,kmers[j],0,21)<=0)
+			{
+				j--;
+			}
+			//如果i<j,填入
+			if (i < j)
+			{
+				kmers[n].assign(kmers[j]);
+				n = j;
+			}
+
+			while (i<j&&temp.compare(0,21,kmers[i],0,21)>0)
+			{
+				i++;
+			}
+			if (i < j)
+			{
+				kmers[n].assign(kmers[i]);
+				n = i;
+			}
+
+		}
+		kmers[i].assign(temp);
+
+		quicksort(kmers, begin, i - 1);
+		quicksort(kmers, i + 1, end);
+	}
+
+
+
+	return kmers;
+}
+
+void merge(vector<string> &kmers1, vector<string> &kmers2, vector<string> &kmers3)
+{
+	ofstream fout("D:\\result1.txt");
+	int count1 = kmers1.size();
+	int count2 = kmers2.size();
+	int count3 = kmers3.size();
+	int i = 0, j = 0;
+	while (i < count1&&j < count2)
+	{
+		if (kmers1[i].compare(0, 21, kmers2[j], 0, 21)<= 0)
+		{
+			fout << kmers1[i++] << endl;
+		}
+		else
+		{
+			fout << kmers2[j++] << endl;
+		}
+	}
+	while (i < count1)
+	{
+		fout << kmers1[i++] << endl;
+	}
+
+	while (j < count2)
+	{
+		fout << kmers2[j++] << endl;
+	}
+	fout.close();
 }
