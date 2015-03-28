@@ -304,7 +304,7 @@ fstream * sort(char *filepath)
 
 	//long pos[N];
 	ifstream fin(filepath);
-	for (int i = 0; i <1000; i++)
+	for (int i = 0; i <700; i++)
 	{
 		char ch[60];
 		fin.getline(ch, 60);
@@ -313,8 +313,18 @@ fstream * sort(char *filepath)
 	}
 	quicksort(kmers, 0, kmers.size());
 
+	//ofstream fout("D:\\result.txt");
 
-	for (int i = 0; i <1000; i++)
+	//for (int i = 0; i< kmers.size(); i++)
+	//{
+
+	//	fout << kmers[i] << endl;
+
+	//}
+	//fout.close();
+
+
+	for (int i = 0; i <700; i++)
 	{
 		char ch[60];
 		fin.getline(ch, 60);
@@ -325,7 +335,7 @@ fstream * sort(char *filepath)
 	quicksort(kmers1, 0, kmers1.size());
 	
 
-	for (int i = 0; i <1000; i++)
+	for (int i = 0; i <700; i++)
 	{
 		char ch[60];
 		fin.getline(ch, 60);
@@ -335,18 +345,10 @@ fstream * sort(char *filepath)
 
 	quicksort(kmers2, 0, kmers2.size());
 
-	merge(kmers, kmers1);
+	merge(kmers, kmers1,kmers2);
 
 
-	ofstream fout("D:\\result.txt");
-
-	for (int i = 0; i< kmers.size(); i++)
-	{
-		
-		fout << kmers[i] << endl;
-		
-	}
-	fout.close();
+	
  	cout << kmers.size();
 	return NULL;
 }
@@ -406,18 +408,60 @@ void merge(vector<string> &kmers1, vector<string> &kmers2, vector<string> &kmers
 	int count1 = kmers1.size();
 	int count2 = kmers2.size();
 	int count3 = kmers3.size();
-	int i = 0, j = 0;
-	while (i < count1&&j < count2)
+	int i = 0, j = 0,k=0;
+	while (i < count1&&j < count2&&k<count3)
 	{
-		if (kmers1[i].compare(0, 21, kmers2[j], 0, 21)<= 0)
+		if (kmers1[i].compare(0, 21, kmers2[j], 0, 21) <= 0 && kmers1[i].compare(0, 21, kmers3[k], 0, 21) <= 0)
+		{
+			fout << kmers1[i++] << endl;
+		}
+		else if (kmers2[j].compare(0,21,kmers3[k],0,21)<=0)
+		{
+			fout << kmers2[j++] << endl;
+		}
+		else
+		{
+			fout << kmers3[k++] << endl;
+		}
+	}
+	while (i < count1&&j<count2)
+	{
+		if (kmers1[i].compare(0, 21, kmers2[j], 0, 21) <= 0)
+		{
+			fout << kmers1[i++] << endl;
+		}
+		else 
+		{
+			fout << kmers2[j++] << endl;
+		}
+		
+	}
+	while (j < count2&&k<count3)
+	{
+
+			 if (kmers2[j].compare(0, 21, kmers3[k], 0, 21) <= 0)
+			{
+				fout << kmers2[j++] << endl;
+			}
+			else
+			{
+				fout << kmers3[k++] << endl;
+			}
+		
+	}
+
+	while (i<count1&&k < count3)
+	{
+		if (kmers1[i].compare(0, 21, kmers3[k], 0, 21) <= 0)
 		{
 			fout << kmers1[i++] << endl;
 		}
 		else
 		{
-			fout << kmers2[j++] << endl;
+			fout << kmers3[k++] << endl;
 		}
 	}
+
 	while (i < count1)
 	{
 		fout << kmers1[i++] << endl;
@@ -426,6 +470,10 @@ void merge(vector<string> &kmers1, vector<string> &kmers2, vector<string> &kmers
 	while (j < count2)
 	{
 		fout << kmers2[j++] << endl;
+	}
+	while (k < count3)
+	{
+		fout << kmers3[k++] << endl;
 	}
 	fout.close();
 }
