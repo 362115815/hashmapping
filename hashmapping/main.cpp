@@ -9,7 +9,8 @@ int main()
 {
 	CHashTable ht[N];
 	char *  filepath = "D://temp.fa";
-//	createHashTable(filepath, ht,N);
+	createHashTable(filepath, ht,N);
+
 	putchar('!');
 	getchar();
 	return 0;
