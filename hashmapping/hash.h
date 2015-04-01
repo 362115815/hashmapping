@@ -54,3 +54,6 @@ CSubHT * getpPos(CSubHT * subHT, char seq[], int length);
 fstream * sort(char *filepath);
 vector<string>  quicksort(vector<string>  &kmers,  int begin,  int end);
 void merge(vector<string> &kmers1, vector<string> &kmers2, vector<string> &kmers3);
+
+vector<string> radixSort(vector<string>& kmers1);
+long getradix(string s);

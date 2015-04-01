@@ -298,12 +298,73 @@ CSubHT * getpPos(CSubHT * subHT, char seq[], int length)
 //对文件中的kmer进行排序
 fstream * sort(char *filepath)
 {
+	
+	/* radix sort BEGIN*/
+	vector<string> kmers;
+	vector<string>kmers1;
+	ifstream fin(filepath);
+	for (int i = 0; i <700; i++)
+	{
+		char ch[60];
+		fin.getline(ch, 60);
+
+		kmers.push_back(ch);
+	}
+
+	for (int i = 0; i <700; i++)
+	{
+		char ch[60];
+		fin.getline(ch, 60);
+
+		kmers1.push_back(ch);
+	}
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/*radix sort END*/
+
+	/* quick sort  BEGIN*/
+	/*
+
+
+	//long pos[N];
+
 	vector<string> kmers;
 	vector<string>kmers1;
 	vector<string>kmers2;
 
-	//long pos[N];
-	ifstream fin(filepath);
+    ifstream fin(filepath);
 	for (int i = 0; i <700; i++)
 	{
 		char ch[60];
@@ -346,10 +407,16 @@ fstream * sort(char *filepath)
 	quicksort(kmers2, 0, kmers2.size());
 
 	merge(kmers, kmers1,kmers2);
-
-
-	
  	cout << kmers.size();
+
+
+
+	*/
+
+	/* quick sort END*/
+
+
+
 	return NULL;
 }
 
@@ -476,4 +543,69 @@ void merge(vector<string> &kmers1, vector<string> &kmers2, vector<string> &kmers
 		fout << kmers3[k++] << endl;
 	}
 	fout.close();
+}
+
+//基数排序
+vector<string> radixSort(vector<string>& kmers)
+{
+	int length = kmers.size();
+	long*  radixcount=new long[N];
+	for (int i = 0; i <N; i++)
+	{
+		radixcount[i] = 0;
+	}
+
+	for (int i = 0; i < length; i++)
+	{
+		//计算基数
+		long radix = getradix(kmers[i].substr(14, 7));
+		radixcount[radix]++;
+	}
+
+	for (int i = 1; i < N; i++)
+	{
+		radixcount[i] += radixcount[i - 1];
+	}
+
+
+
+
+
+
+
+
+	delete[] radixcount;
+
+
+
+	return kmers;
+}
+
+
+//计算序列对应的基数
+long getradix(string s )
+{
+	long radix=0;
+	for (int i =0; i < s.length(); i++)
+	{
+		string temp= s.substr(i, 1);
+		if (temp == "A")
+		{
+			radix += 0;
+		}
+		else if (temp == "C")
+		{
+			radix += (long)pow(4, i );
+		}
+		else if (temp == "G")
+		{
+			radix += (long)pow(4, i ) * 2;
+		}
+		else if (temp == "T")
+		{
+			radix += (long)pow(4, i) * 3;
+		}
+
+	}
+	return radix;
 }
