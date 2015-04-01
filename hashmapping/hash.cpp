@@ -1,6 +1,6 @@
 #pragma once
 #include "hash.h"
-#define N 16385
+#define N 16384
 #define M  500
 #include <fstream>
 #include <iostream>
@@ -303,21 +303,60 @@ fstream * sort(char *filepath)
 	vector<string> kmers;
 	vector<string>kmers1;
 	ifstream fin(filepath);
-	for (int i = 0; i <700; i++)
+	
+
+	for (int i = 0; i <8000000; i++)
 	{
+
+
 		char ch[60];
+		
+		//fout<<fin.tellg()<<endl;
+
 		fin.getline(ch, 60);
 
 		kmers.push_back(ch);
 	}
 
-	for (int i = 0; i <700; i++)
+
+	//ifstream fin1("D:\\kmers.txt");
+	//ofstream fout("D:\\1.txt");
+	//for (int i = 0; i < 20000000; i++)
+	//{
+	//	char ch[100];
+	//	fin.getline(ch, 100);
+	//	fout << ch << endl;
+
+	//}
+
+	/*for (int i = 0; i <700; i++)
 	{
 		char ch[60];
 		fin.getline(ch, 60);
 
 		kmers1.push_back(ch);
-	}
+	}*/
+
+   radixSort(kmers);
+
+	 /*ifstream fin1("D:\\radixsort.txt");
+	 string ss[2];
+	 int head = 0;
+	 char ch[100];
+	 fin1.getline(ch, 100);
+	 ss[0] = ch;
+	 for (int i = 0; i < 400000-1; i++)
+	 {
+		 int tail = head;
+		 head = (head + 1) % 2;
+		 fin1.getline(ch, 100);
+		 ss[head] = ch;
+		 if (ss[tail].compare(0, 21, ss[head], 0, 21)>0)
+		 {
+			 cout << ss[tail] << endl << ss[head] << endl << endl << endl;
+		 }
+	 }*/
+	//验证radixsort正确性
 
 
 
@@ -549,7 +588,11 @@ void merge(vector<string> &kmers1, vector<string> &kmers2, vector<string> &kmers
 vector<string> radixSort(vector<string>& kmers)
 {
 	int length = kmers.size();
-	long*  radixcount=new long[N];
+	vector<string>kmers1(length);
+	long  radixcount[N];
+	long *radix = new long[length];
+
+	//后七位排序
 	for (int i = 0; i <N; i++)
 	{
 		radixcount[i] = 0;
@@ -557,9 +600,9 @@ vector<string> radixSort(vector<string>& kmers)
 
 	for (int i = 0; i < length; i++)
 	{
-		//计算基数
-		long radix = getradix(kmers[i].substr(14, 7));
-		radixcount[radix]++;
+	
+		radix[i] = getradix(kmers[i].substr(14, 7));
+		radixcount[radix[i]]++;
 	}
 
 	for (int i = 1; i < N; i++)
@@ -567,18 +610,79 @@ vector<string> radixSort(vector<string>& kmers)
 		radixcount[i] += radixcount[i - 1];
 	}
 
+	
+	
+	for (int i = length - 1; i >= 0; i--)
+	{
+		kmers1[radixcount[radix[i]]-1] = kmers[i];
+		radixcount[radix[i]]--;
+
+	}
+
+	//中间7位排序
+	for (int i = 0; i <N; i++)
+	{
+		radixcount[i] = 0;
+	}
+	for (int i = 0; i < length; i++)
+	{
+		radix[i] = getradix(kmers1[i].substr(7, 7));
+		radixcount[radix[i]]++;
+	}
+
+	for (int i = 1; i < N; i++)
+	{
+		radixcount[i] += radixcount[i - 1];
+	}
+
+	for (int i = length - 1; i >= 0; i--)
+	{
+		kmers[radixcount[radix[i]] - 1] = kmers1[i];
+		radixcount[radix[i]]--;
+	}
+
+	//前7位排序
+	for (int i = 0; i <N; i++)
+	{
+		radixcount[i] = 0;
+	}
+	for (int i = 0; i < length; i++)
+	{
+		radix[i] = getradix(kmers[i].substr(0, 7));
+		radixcount[radix[i]]++;
+	}
+
+	for (int i = 1; i < N; i++)
+	{
+		radixcount[i] += radixcount[i - 1];
+	}
+
+	for (int i = length - 1; i >= 0; i--)
+	{
+		kmers1[radixcount[radix[i]] - 1] = kmers[i];
+		radixcount[radix[i]]--;
+	}
 
 
 
 
 
+	ofstream fout("D:\\radixsort.txt");
+	for (int i = 0; i < length; i++)
+	{
+		fout << kmers1[i] << endl;
+	}
+		
+	fout.close();
 
 
-	delete[] radixcount;
 
 
 
-	return kmers;
+	delete[]radix;
+
+
+	return kmers1;
 }
 
 
@@ -586,7 +690,8 @@ vector<string> radixSort(vector<string>& kmers)
 long getradix(string s )
 {
 	long radix=0;
-	for (int i =0; i < s.length(); i++)
+	int length = s.length();
+	for (int i = 0; i < length; i++)
 	{
 		string temp= s.substr(i, 1);
 		if (temp == "A")
@@ -595,15 +700,15 @@ long getradix(string s )
 		}
 		else if (temp == "C")
 		{
-			radix += (long)pow(4, i );
+			radix += (long)pow(4, length-1-i );
 		}
 		else if (temp == "G")
 		{
-			radix += (long)pow(4, i ) * 2;
+			radix += (long)pow(4, length - 1 - i) * 2;
 		}
 		else if (temp == "T")
 		{
-			radix += (long)pow(4, i) * 3;
+			radix += (long)pow(4, length - 1 - i) * 3;
 		}
 
 	}

@@ -9,7 +9,7 @@ using namespace std;
 int main()
 {
 	CHashTable ht[N];
-	char *  filepath = "D://kmersample.txt";
+	char *  filepath = "D://kmers.txt";
 	//createHashTable(filepath, ht,N);
 	long start, finish;
 	double totaltime;
