@@ -56,3 +56,4 @@ vector<string>  quicksort(vector<string>  &kmers,  int begin,  int end);
 void merge(vector<string> &kmers1, vector<string> &kmers2, vector<string> &kmers3);
 void  radixSort(vector<string>  * kmers, int num);
 long getradix(string s);
+void filemerge(int index, int num, string pathprefix);

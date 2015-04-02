@@ -300,26 +300,17 @@ CSubHT * getpPos(CSubHT * subHT, char seq[], int length)
 //对文件中的kmer进行排序
 fstream * sort(char *filepath)
 {
-	
+
+
+
 	/* radix sort BEGIN*/
 	
+	/*
 	vector<string>kmers1;
 	ifstream fin(filepath);
 	string resultpath = "D:\\radixsort.txt";
 	int num = 0;
 
-	//for (int i = 0; i < 20; i++)
-	//{
-	//	char ch[60];
-	//	fin.getline(ch, 60);
-	//	cout << ch << endl;
-	//	if (strcmp(ch, "") == 0)
-	//	{
-	//		cout << "~" << endl;
-	//	}
-	//}
-	//cout << "!!!" << endl;
-	
 
 
 	int count = 0;
@@ -340,10 +331,7 @@ fstream * sort(char *filepath)
 
 				fin.getline(ch, 60);
 				if (strcmp(ch, "") == 0)
-				{
-
-					
-				
+				{	
 					for (int m = 0; m < num-1; m++)
 					{
 						t[m].join();
@@ -370,60 +358,29 @@ fstream * sort(char *filepath)
 
 
 
- //  radixSort(kmers);
+	*/
+
+
 
 	// 验证radixsort正确性
-	 /*ifstream fin1("D:\\radixsort.txt");
-	 string ss[2];
-	 int head = 0;
-	 char ch[100];
-	 fin1.getline(ch, 100);
-	 ss[0] = ch;
-	 for (int i = 0; i < 400000-1; i++)
-	 {
-		 int tail = head;
-		 head = (head + 1) % 2;
-		 fin1.getline(ch, 100);
-		 ss[head] = ch;
-		 if (ss[tail].compare(0, 21, ss[head], 0, 21)>0)
-		 {
-			 cout << ss[tail] << endl << ss[head] << endl << endl << endl;
-		 }
-	 }*/
-	
 
-
-
-
-
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	/*ifstream fin1("D:\\radixsort.txt");
+	string ss[2];
+	int head = 0;
+	char ch[100];
+	fin1.getline(ch, 100);
+	ss[0] = ch;
+	for (int i = 0; i < 400000-1; i++)
+	{
+	int tail = head;
+	head = (head + 1) % 2;
+	fin1.getline(ch, 100);
+	ss[head] = ch;
+	if (ss[tail].compare(0, 21, ss[head], 0, 21)>0)
+	{
+	cout << ss[tail] << endl << ss[head] << endl << endl << endl;
+	}
+	}*/
 
 	/*radix sort END*/
 
@@ -488,6 +445,16 @@ fstream * sort(char *filepath)
 
 	/* quick sort END*/
 
+
+/* filemerge BEGIN*/
+
+
+string pathprefix = "D:\\1\\";
+
+filemerge(1, 5, pathprefix);
+
+
+/* filemerge END*/
 
 
 	return NULL;
@@ -754,3 +721,121 @@ long getradix(string s )
 	return radix;
 }
 
+//输入开始文件序号，文件数量，路径前缀
+void filemerge(int index, int num,string pathprefix)
+{
+
+
+
+
+	ifstream * fin = new ifstream[num];
+	bool flag = true;//文件是否都结束标志变量
+	bool * isend = new bool[num];
+
+	string *kmer = new string[num];//存储kmer
+	char ch[100];
+
+	sprintf(ch, "%d", index);
+	
+	string filepath = pathprefix + "merged\\" + ch + ".txt";
+
+	ofstream fout(filepath);
+
+	//先打开文件
+	for (int i = 0; i < num; i++)
+	{
+		sprintf(ch, "%d", index++);
+		filepath = pathprefix + "merged\\" + ch + ".txt";
+		fin[i].open(filepath);
+	}
+
+
+
+
+	//扫描文件列表,将未到末尾文件从中取出一条记录存到kmer数组里，并将isend[i]设为真，否则设为假；
+	for (int i = 0; i < num; i++)
+	{
+		//如果不是文件末尾
+		if (fin[i].peek() != EOF)
+		{
+			isend[i] = true;
+			fin[i].getline(ch, 100);
+			kmer[i] = ch;
+		}
+		else
+		{
+			isend[i] = false;
+		}
+
+	}
+
+
+
+
+	while (flag)
+	{
+		flag = false;
+		
+		//扫描kmer数组，将里面最小的kmer存入结果文件，并更新kmer
+
+		//初始化j
+		int j =0;
+		for (int i = 0; i < num; i++)
+		{
+			if (isend[i])
+			{
+				j = i;
+				break;
+			}
+		}
+
+
+		//挑出最小kmer
+		for (int i = j+1; i < num; i++)
+		{
+			if ( ! isend[i])
+			{
+				continue;
+			}
+			if (kmer[j].compare(0, 21, kmer[i], 0, 21)>0)
+			{
+				j = i;
+			}
+		}
+
+		//将最小kmer写入文件并更新
+		fout << kmer[j] << endl;
+		if (fin[j].peek() != EOF)
+		{
+			flag = true;
+			fin[j].getline(ch, 100);
+			kmer[j] = ch;
+		}
+		else
+		{
+			isend[j] = false;
+			for (int m = 0; m < num; m++)
+			{
+				if (isend[m])
+				{
+					flag = true;
+					break;
+				}
+			}
+		}
+
+
+	}
+
+
+
+	fout.close();
+	for (int i = 0; i < num; i++)
+	{
+		fin[i].close();
+	}
+	delete[]kmer;
+	delete[]isend;
+	delete[]fin;
+	return;
+}
