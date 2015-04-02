@@ -1,4 +1,6 @@
 #include<iostream>
+#pragma once
+
 #include<fstream>
 #include "hash.h"
 #include<cmath>
@@ -6,6 +8,7 @@
 #define N 16385
 #define M  1000
 using namespace std;
+
 int main()
 {
 	CHashTable ht[N];
@@ -18,7 +21,7 @@ int main()
 
 	sort(filepath);
 
-	finish = clock();
+   	finish = clock();
 	totaltime = (double)(finish - start) / CLOCKS_PER_SEC;
 	cout << "\n运行时间为:" << totaltime << "秒" << endl;
 	system("pause");

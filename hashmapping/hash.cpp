@@ -7,6 +7,7 @@
 #include<cmath>
 #include<cstring>
 #include<vector>
+#include <thread>
 using namespace std;
 
 int createHashTable(const char * filename, CHashTable ht[], long length)
@@ -300,45 +301,60 @@ fstream * sort(char *filepath)
 {
 	
 	/* radix sort BEGIN*/
-	vector<string> kmers;
+	
 	vector<string>kmers1;
 	ifstream fin(filepath);
-	
+	string resultpath = "D:\\radixsort.txt";
+	int num = 0;
 
-	for (int i = 0; i <8000000; i++)
+	//for (int i = 0; i < 20; i++)
+	//{
+	//	char ch[60];
+	//	fin.getline(ch, 60);
+	//	cout << ch << endl;
+	//	if (strcmp(ch, "") == 0)
+	//	{
+	//		cout << "~" << endl;
+	//	}
+	//}
+	//cout << "!!!" << endl;
+	thread t[2];
+
+	while (num < 2)
 	{
 
 
-		char ch[60];
-		
-		//fout<<fin.tellg()<<endl;
+		num++;
+		vector<string>* kmers = new vector<string>;
+		for (int i = 0; i < 2500000; i++)
+		{
+			char ch[60];
+			//fout<<fin.tellg()<<endl;
 
-		fin.getline(ch, 60);
+			fin.getline(ch, 60);
+			if (strcmp(ch, "") == 0)
+			{
+				thread(radixSort, kmers, num).detach();
+			//	radixSort(kmers, num);
+				return NULL;
+			}
 
-		kmers.push_back(ch);
+			(*kmers).push_back(ch);
+		}
+
+		t[num-1] = thread(radixSort, kmers, num);
+		//radixSort(kmers, num);
+
+	}
+	for (int i = 0; i < num; i++)
+	{
+		t[i].join();
 	}
 
 
-	//ifstream fin1("D:\\kmers.txt");
-	//ofstream fout("D:\\1.txt");
-	//for (int i = 0; i < 20000000; i++)
-	//{
-	//	char ch[100];
-	//	fin.getline(ch, 100);
-	//	fout << ch << endl;
+ //  radixSort(kmers);
 
-	//}
-
-	/*for (int i = 0; i <700; i++)
-	{
-		char ch[60];
-		fin.getline(ch, 60);
-
-		kmers1.push_back(ch);
-	}*/
-
-   radixSort(kmers);
-
+	// 验证radixsort正确性
 	 /*ifstream fin1("D:\\radixsort.txt");
 	 string ss[2];
 	 int head = 0;
@@ -356,7 +372,7 @@ fstream * sort(char *filepath)
 			 cout << ss[tail] << endl << ss[head] << endl << endl << endl;
 		 }
 	 }*/
-	//验证radixsort正确性
+	
 
 
 
@@ -585,9 +601,12 @@ void merge(vector<string> &kmers1, vector<string> &kmers2, vector<string> &kmers
 }
 
 //基数排序
-vector<string> radixSort(vector<string>& kmers)
+void  radixSort(vector<string>  * kmers,int num)
 {
-	int length = kmers.size();
+	
+	long start = clock();
+
+	int length = (*kmers).size();
 	vector<string>kmers1(length);
 	long  radixcount[N];
 	long *radix = new long[length];
@@ -601,7 +620,7 @@ vector<string> radixSort(vector<string>& kmers)
 	for (int i = 0; i < length; i++)
 	{
 	
-		radix[i] = getradix(kmers[i].substr(14, 7));
+		radix[i] = getradix((*kmers)[i].substr(14, 7));
 		radixcount[radix[i]]++;
 	}
 
@@ -614,7 +633,7 @@ vector<string> radixSort(vector<string>& kmers)
 	
 	for (int i = length - 1; i >= 0; i--)
 	{
-		kmers1[radixcount[radix[i]]-1] = kmers[i];
+		kmers1[radixcount[radix[i]]-1] = (*kmers)[i];
 		radixcount[radix[i]]--;
 
 	}
@@ -637,7 +656,7 @@ vector<string> radixSort(vector<string>& kmers)
 
 	for (int i = length - 1; i >= 0; i--)
 	{
-		kmers[radixcount[radix[i]] - 1] = kmers1[i];
+		(*kmers)[radixcount[radix[i]] - 1] = kmers1[i];
 		radixcount[radix[i]]--;
 	}
 
@@ -648,7 +667,7 @@ vector<string> radixSort(vector<string>& kmers)
 	}
 	for (int i = 0; i < length; i++)
 	{
-		radix[i] = getradix(kmers[i].substr(0, 7));
+		radix[i] = getradix((*kmers)[i].substr(0, 7));
 		radixcount[radix[i]]++;
 	}
 
@@ -659,15 +678,18 @@ vector<string> radixSort(vector<string>& kmers)
 
 	for (int i = length - 1; i >= 0; i--)
 	{
-		kmers1[radixcount[radix[i]] - 1] = kmers[i];
+		kmers1[radixcount[radix[i]] - 1] = (*kmers)[i];
 		radixcount[radix[i]]--;
 	}
 
 
 
 
+	char buffer[20];
+	_itoa_s(num, buffer, 20);
+	string resultpath = "D:\\sorted\\" + string(buffer) + ".txt";
 
-	ofstream fout("D:\\radixsort.txt");
+	ofstream fout(resultpath);
 	for (int i = 0; i < length; i++)
 	{
 		fout << kmers1[i] << endl;
@@ -679,10 +701,20 @@ vector<string> radixSort(vector<string>& kmers)
 
 
 
+
 	delete[]radix;
+	delete kmers;
+
+  long finish = clock();
+
+	double totaltime = (double)(finish - start) / CLOCKS_PER_SEC;
+	cout << "Thread"<<num<<"\n运行时间为:" << totaltime << "秒" << endl;
+
+	return;
 
 
-	return kmers1;
+
+
 }
 
 
@@ -714,3 +746,4 @@ long getradix(string s )
 	}
 	return radix;
 }
+
