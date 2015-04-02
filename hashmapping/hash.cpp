@@ -342,12 +342,14 @@ fstream * sort(char *filepath)
 				if (strcmp(ch, "") == 0)
 				{
 
-
-					thread(radixSort, kmers, ++count).detach();
-					for (int m = 0; m < num; m++)
+					
+				
+					for (int m = 0; m < num-1; m++)
 					{
 						t[m].join();
 					}
+					thread(radixSort, kmers, ++count).join();
+
 					//	radixSort(kmers, num);
 					return NULL;
 				}
@@ -703,7 +705,7 @@ void  radixSort(vector<string>  * kmers,int num)
 	char buffer[20];
 	sprintf(buffer, "%d", num);
 
-	std::cout << num << '\t' << buffer << endl;
+	//std::cout << num << '\t' << buffer << endl;
 	string resultpath = "D:\\sorted\\" + string(buffer) + ".txt";
 
 	ofstream fout(resultpath);
