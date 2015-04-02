@@ -1,7 +1,8 @@
 #pragma once
 #include "hash.h"
-#define N 16384
+#define N 16385
 #define M  500
+#define THREADNUM 8
 #include <fstream>
 #include <iostream>
 #include<cmath>
@@ -318,38 +319,53 @@ fstream * sort(char *filepath)
 	//	}
 	//}
 	//cout << "!!!" << endl;
-	thread t[2];
+	
 
-	while (num < 2)
+
+	int count = 0;
+	thread t[THREADNUM];
+
+	while (fin.peek()!=EOF)
 	{
-
-
-		num++;
-		vector<string>* kmers = new vector<string>;
-		for (int i = 0; i < 2500000; i++)
+		num = 0;
+		
+		while (num < THREADNUM)
 		{
-			char ch[60];
-			//fout<<fin.tellg()<<endl;
-
-			fin.getline(ch, 60);
-			if (strcmp(ch, "") == 0)
+			num++;
+			vector<string>* kmers = new vector<string>;
+			for (int i = 0; i < 5000000; i++)
 			{
-				thread(radixSort, kmers, num).detach();
-			//	radixSort(kmers, num);
-				return NULL;
-			}
+				char ch[60];
+				//fout<<fin.tellg()<<endl;
 
-			(*kmers).push_back(ch);
+				fin.getline(ch, 60);
+				if (strcmp(ch, "") == 0)
+				{
+
+
+					thread(radixSort, kmers, ++count).detach();
+					for (int m = 0; m < num; m++)
+					{
+						t[m].join();
+					}
+					//	radixSort(kmers, num);
+					return NULL;
+				}
+
+				(*kmers).push_back(ch);
+
+
+			}
+			t[num - 1] = thread(radixSort, kmers, ++count);
+		}
+		for (int i = 0; i < THREADNUM; i++)
+		{
+			t[i].join();
 		}
 
-		t[num-1] = thread(radixSort, kmers, num);
-		//radixSort(kmers, num);
+	}
 
-	}
-	for (int i = 0; i < num; i++)
-	{
-		t[i].join();
-	}
+
 
 
  //  radixSort(kmers);
@@ -479,7 +495,7 @@ fstream * sort(char *filepath)
 //快速排序
 
 vector<string>  quicksort(vector<string>  &kmers, int begin, int end)
-{
+ {
 	if (begin < end)
 	{
 		
@@ -684,9 +700,10 @@ void  radixSort(vector<string>  * kmers,int num)
 
 
 
-
 	char buffer[20];
-	_itoa_s(num, buffer, 20);
+	sprintf(buffer, "%d", num);
+
+	std::cout << num << '\t' << buffer << endl;
 	string resultpath = "D:\\sorted\\" + string(buffer) + ".txt";
 
 	ofstream fout(resultpath);
@@ -696,24 +713,12 @@ void  radixSort(vector<string>  * kmers,int num)
 	}
 		
 	fout.close();
-
-
-
-
-
-
 	delete[]radix;
 	delete kmers;
-
   long finish = clock();
-
 	double totaltime = (double)(finish - start) / CLOCKS_PER_SEC;
 	cout << "Thread"<<num<<"\n运行时间为:" << totaltime << "秒" << endl;
-
 	return;
-
-
-
 
 }
 
