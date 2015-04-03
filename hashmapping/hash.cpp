@@ -36,7 +36,7 @@ int createHashTable(const char * filename, CHashTable ht[], long length)
 	kmer[21] = '\0';
 	char ch;
 	long flag = 21;
-	
+
 	ofstream fout("D:\\result.txt");
 
 
@@ -65,19 +65,19 @@ int createHashTable(const char * filename, CHashTable ht[], long length)
 				//kmer[i] = seqQue[j];
 				fout << seqQue[j];
 			}
-			
+
 
 			//输入kmer
-				
 
-				fout << ' ' << curpos << endl;
+
+			fout << ' ' << curpos << endl;
 
 			//int flag = kmerInsert(kmer, curpos, ht);
 		}
 		tail = (tail + 1) % 21;
 	}
 	fout.close();
-	
+
 
 	return 0;
 }
@@ -156,18 +156,18 @@ int kmerInsert(char kmer[], long curpos, CHashTable ht[])
 
 
 	//处理后面7位
-	
+
 	for (int i = 14; i < 21; i++)
 	{
-	if (kmer[i] == 'N')
-	{
-	return -1;//如果是N ，则返回
-	}
-	seq[i - 14] = kmer[i];
+		if (kmer[i] == 'N')
+		{
+			return -1;//如果是N ，则返回
+		}
+		seq[i - 14] = kmer[i];
 	}
 
 
-	
+
 	CSubHT * subHT1 = NULL;
 
 	if (subHT->pSubHT == NULL)
@@ -182,7 +182,7 @@ int kmerInsert(char kmer[], long curpos, CHashTable ht[])
 	{
 		strcpy_s(subHT1->seq, seq);
 	}
-	
+
 	//存储bp位置
 	CPosition * pPos = new CPosition;
 	pPos->pos = curpos;
@@ -247,9 +247,9 @@ unsigned int BKDRHash(char *str)
 }
 CSubHT * getpPos(CSubHT * subHT, char seq[], int length)
 {
-	unsigned pos = BKDRHash(seq)%(M-1);//计算存储位置
+	unsigned pos = BKDRHash(seq) % (M - 1);//计算存储位置
 	int flag = 0;
-	
+
 	//如果该位置序列等于"",或等于seq，则返回该位置
 	while (1)
 	{
@@ -281,11 +281,11 @@ CSubHT * getpPos(CSubHT * subHT, char seq[], int length)
 			{
 				pos = (pos + (flag + 1) * 33) % (M - 1);
 			}
-			
+
 		}
 	}
 
-	
+
 
 
 	return	NULL;
@@ -300,7 +300,7 @@ fstream * sort(char *filepath)
 
 
 	/* radix sort BEGIN*/
-	
+
 	/*
 	vector<string>kmers1;
 	ifstream fin(filepath);
@@ -314,40 +314,40 @@ fstream * sort(char *filepath)
 
 	while (fin.peek()!=EOF)
 	{
-		num = 0;
-		
-		while (num < THREADNUM)
-		{
-			num++;
-			vector<string>* kmers = new vector<string>;
-			for (int i = 0; i < 5000000; i++)
-			{
-				char ch[60];
-				//fout<<fin.tellg()<<endl;
+	num = 0;
 
-				fin.getline(ch, 60);
-				if (strcmp(ch, "") == 0)
-				{	
-					for (int m = 0; m < num-1; m++)
-					{
-						t[m].join();
-					}
-					thread(radixSort, kmers, ++count).join();
+	while (num < THREADNUM)
+	{
+	num++;
+	vector<string>* kmers = new vector<string>;
+	for (int i = 0; i < 5000000; i++)
+	{
+	char ch[60];
+	//fout<<fin.tellg()<<endl;
 
-					//	radixSort(kmers, num);
-					return NULL;
-				}
+	fin.getline(ch, 60);
+	if (strcmp(ch, "") == 0)
+	{
+	for (int m = 0; m < num-1; m++)
+	{
+	t[m].join();
+	}
+	thread(radixSort, kmers, ++count).join();
 
-				(*kmers).push_back(ch);
+	//	radixSort(kmers, num);
+	return NULL;
+	}
+
+	(*kmers).push_back(ch);
 
 
-			}
-			t[num - 1] = thread(radixSort, kmers, ++count);
-		}
-		for (int i = 0; i < THREADNUM; i++)
-		{
-			t[i].join();
-		}
+	}
+	t[num - 1] = thread(radixSort, kmers, ++count);
+	}
+	for (int i = 0; i < THREADNUM; i++)
+	{
+	t[i].join();
+	}
 
 	}
 
@@ -388,13 +388,13 @@ fstream * sort(char *filepath)
 	vector<string>kmers1;
 	vector<string>kmers2;
 
-    ifstream fin(filepath);
+	ifstream fin(filepath);
 	for (int i = 0; i <700; i++)
 	{
-		char ch[60];
-		fin.getline(ch, 60);
-		
-		kmers.push_back(ch);
+	char ch[60];
+	fin.getline(ch, 60);
+
+	kmers.push_back(ch);
 	}
 	quicksort(kmers, 0, kmers.size());
 
@@ -411,27 +411,27 @@ fstream * sort(char *filepath)
 
 	for (int i = 0; i <700; i++)
 	{
-		char ch[60];
-		fin.getline(ch, 60);
+	char ch[60];
+	fin.getline(ch, 60);
 
-		kmers1.push_back(ch);
+	kmers1.push_back(ch);
 	}
 
 	quicksort(kmers1, 0, kmers1.size());
-	
+
 
 	for (int i = 0; i <700; i++)
 	{
-		char ch[60];
-		fin.getline(ch, 60);
+	char ch[60];
+	fin.getline(ch, 60);
 
-		kmers2.push_back(ch);
+	kmers2.push_back(ch);
 	}
 
 	quicksort(kmers2, 0, kmers2.size());
 
 	merge(kmers, kmers1,kmers2);
- 	cout << kmers.size();
+	cout << kmers.size();
 
 
 
@@ -440,64 +440,91 @@ fstream * sort(char *filepath)
 	/* quick sort END*/
 
 
-/* filemerge BEGIN*/
+	/* filemerge BEGIN*/
 
 
-///string pathprefix = "D:\\sorted\\";
+	///string pathprefix = "D:\\sorted\\";
 
-//filemerge(1, 45, pathprefix);
-
-
-/* filemerge END*/
+	//filemerge(1, 45, pathprefix);
 
 
+	/* filemerge END*/
 
-//统计kmer数量和kmer最大出现次数
-ifstream fin("D:\\kmer_ordered.txt");
 
-string s1;
-string s2;
-long kmernum = 0, maxcount = 0, count = 0,line=0;
-char ch[100];
 
-fin.getline(ch, 100);
-line++;
-s1 = ch;
-count++;
-kmernum++;
-while (fin.peek() != EOF)
-{
+	//去除重复kmer，并把位置存下来
+	
+	ifstream fin("D:\\kmer_ordered.txt");
+	ofstream fout("D:\\kmer_unique.txt");
+	string s1;
+	string s2;
+	string seq,pos;
+	long  index;
+	long kmernum = 0, maxcount = 0, count = 0,line=0;
+	char ch[100];
+
+	fin.getline(ch, 100);
+	line++;
+	s1 = ch;
+
+	count++;
+	kmernum++;
+	while (fin.peek() != EOF)
+	{
 	fin.getline(ch, 100);
 	line++;
 	s2 = ch;
 	while (fin.peek() != EOF)
 	{
-		if (s1.compare(0, 21, s2, 0, 21) == 0)
-		{
-			count++;
-			fin.getline(ch, 100);
-			line++;
-			s2 = ch;
-		}
-		else
-		{
-			
-			if (maxcount < count)
-			{
-				maxcount = count;
-				
-			}
-			s1 = s2;
-			count = 1;
-			kmernum++;
-			break;
-		}
+	if (s1.compare(0, 21, s2, 0, 21) == 0)
+	{
+		index = s2.find_first_of(" ");
+		s1 =s1+ " " + s2.substr(index + 1);
+	count++;
+	fin.getline(ch, 100);
+	line++;
+	s2 = ch;
+	}
+	else
+	{
+
+	if (maxcount < count)
+	{
+	maxcount = count;
+
+	}
+	fout << s1 << endl;
+
+	s1 = s2;
+	count = 1;
+	kmernum++;
+	break;
+	}
 	}
 
-}
-cout << "line=" << line << endl;
-cout << "kmernum=" << kmernum << endl;
-cout << "maxcount=" << maxcount << endl;
+	}
+	cout << "line=" << line << endl;
+	cout << "kmernum=" << kmernum << endl;
+	cout << "maxcount=" << maxcount << endl;
+
+	fin.close();
+	fout.close();
+
+
+	
+
+	
+
+
+		
+
+
+
+
+
+
+
+
 
 
 
@@ -512,19 +539,19 @@ cout << "maxcount=" << maxcount << endl;
 //快速排序
 
 vector<string>  quicksort(vector<string>  &kmers, int begin, int end)
- {
+{
 	if (begin < end)
 	{
-		
-		int n = rand() % (end-begin) + begin;
-		string temp=kmers[n];
+
+		int n = rand() % (end - begin) + begin;
+		string temp = kmers[n];
 
 		int i = begin;
 		int j = end - 1;
 		while (i<j)
 		{
 			//先从右侧开始找
-			while (i < j&& temp.compare(0,21,kmers[j],0,21)<=0)
+			while (i < j&& temp.compare(0, 21, kmers[j], 0, 21) <= 0)
 			{
 				j--;
 			}
@@ -535,7 +562,7 @@ vector<string>  quicksort(vector<string>  &kmers, int begin, int end)
 				n = j;
 			}
 
-			while (i<j&&temp.compare(0,21,kmers[i],0,21)>0)
+			while (i<j&&temp.compare(0, 21, kmers[i], 0, 21)>0)
 			{
 				i++;
 			}
@@ -563,14 +590,14 @@ void merge(vector<string> &kmers1, vector<string> &kmers2, vector<string> &kmers
 	int count1 = kmers1.size();
 	int count2 = kmers2.size();
 	int count3 = kmers3.size();
-	int i = 0, j = 0,k=0;
+	int i = 0, j = 0, k = 0;
 	while (i < count1&&j < count2&&k<count3)
 	{
 		if (kmers1[i].compare(0, 21, kmers2[j], 0, 21) <= 0 && kmers1[i].compare(0, 21, kmers3[k], 0, 21) <= 0)
 		{
 			fout << kmers1[i++] << endl;
 		}
-		else if (kmers2[j].compare(0,21,kmers3[k],0,21)<=0)
+		else if (kmers2[j].compare(0, 21, kmers3[k], 0, 21) <= 0)
 		{
 			fout << kmers2[j++] << endl;
 		}
@@ -585,24 +612,24 @@ void merge(vector<string> &kmers1, vector<string> &kmers2, vector<string> &kmers
 		{
 			fout << kmers1[i++] << endl;
 		}
-		else 
+		else
 		{
 			fout << kmers2[j++] << endl;
 		}
-		
+
 	}
 	while (j < count2&&k<count3)
 	{
 
-			 if (kmers2[j].compare(0, 21, kmers3[k], 0, 21) <= 0)
-			{
-				fout << kmers2[j++] << endl;
-			}
-			else
-			{
-				fout << kmers3[k++] << endl;
-			}
-		
+		if (kmers2[j].compare(0, 21, kmers3[k], 0, 21) <= 0)
+		{
+			fout << kmers2[j++] << endl;
+		}
+		else
+		{
+			fout << kmers3[k++] << endl;
+		}
+
 	}
 
 	while (i<count1&&k < count3)
@@ -634,9 +661,9 @@ void merge(vector<string> &kmers1, vector<string> &kmers2, vector<string> &kmers
 }
 
 //基数排序
-void  radixSort(vector<string>  * kmers,int num)
+void  radixSort(vector<string>  * kmers, int num)
 {
-	
+
 	long start = clock();
 
 	int length = (*kmers).size();
@@ -652,7 +679,7 @@ void  radixSort(vector<string>  * kmers,int num)
 
 	for (int i = 0; i < length; i++)
 	{
-	
+
 		radix[i] = getradix((*kmers)[i].substr(14, 7));
 		radixcount[radix[i]]++;
 	}
@@ -662,11 +689,11 @@ void  radixSort(vector<string>  * kmers,int num)
 		radixcount[i] += radixcount[i - 1];
 	}
 
-	
-	
+
+
 	for (int i = length - 1; i >= 0; i--)
 	{
-		kmers1[radixcount[radix[i]]-1] = (*kmers)[i];
+		kmers1[radixcount[radix[i]] - 1] = (*kmers)[i];
 		radixcount[radix[i]]--;
 
 	}
@@ -728,33 +755,33 @@ void  radixSort(vector<string>  * kmers,int num)
 	{
 		fout << kmers1[i] << endl;
 	}
-		
+
 	fout.close();
 	delete[]radix;
 	delete kmers;
-  long finish = clock();
+	long finish = clock();
 	double totaltime = (double)(finish - start) / CLOCKS_PER_SEC;
-	cout << "Thread"<<num<<"\n运行时间为:" << totaltime << "秒" << endl;
+	cout << "Thread" << num << "\n运行时间为:" << totaltime << "秒" << endl;
 	return;
 
 }
 
 
 //计算序列对应的基数
-long getradix(string s )
+long getradix(string s)
 {
-	long radix=0;
+	long radix = 0;
 	int length = s.length();
 	for (int i = 0; i < length; i++)
 	{
-		string temp= s.substr(i, 1);
+		string temp = s.substr(i, 1);
 		if (temp == "A")
 		{
 			radix += 0;
 		}
 		else if (temp == "C")
 		{
-			radix += (long)pow(4, length-1-i );
+			radix += (long)pow(4, length - 1 - i);
 		}
 		else if (temp == "G")
 		{
@@ -770,7 +797,7 @@ long getradix(string s )
 }
 
 //输入开始文件序号，文件数量，路径前缀
-void filemerge(int index, int num,string pathprefix)
+void filemerge(int index, int num, string pathprefix)
 {
 
 
@@ -784,7 +811,7 @@ void filemerge(int index, int num,string pathprefix)
 	char ch[100];
 
 	sprintf_s(ch, "%d", index);
-	
+
 	string filepath = pathprefix + "merged\\" + ch + ".txt";
 
 	ofstream fout(filepath);
@@ -823,11 +850,11 @@ void filemerge(int index, int num,string pathprefix)
 	while (flag)
 	{
 		flag = false;
-		
+
 		//扫描kmer数组，将里面最小的kmer存入结果文件，并更新kmer
 
 		//初始化j
-		int j =0;
+		int j = 0;
 		for (int i = 0; i < num; i++)
 		{
 			if (isend[i])
@@ -839,9 +866,9 @@ void filemerge(int index, int num,string pathprefix)
 
 
 		//挑出最小kmer
-		for (int i = j+1; i < num; i++)
+		for (int i = j + 1; i < num; i++)
 		{
-			if ( ! isend[i])
+			if (!isend[i])
 			{
 				continue;
 			}
