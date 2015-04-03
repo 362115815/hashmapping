@@ -15,12 +15,10 @@ int createHashTable(const char * filename, CHashTable ht[], long length)
 {
 	ifstream fin;
 	fin.open(filename);
-
 	//去除首行
 	char 	line[20];
 	fin.getline(line, 80);
 	std::cout << line << endl;
-
 	//创建哈希表，先读取字符，用队列处理
 	long curpos = 0;//bp位置
 	char seqQue[22];//kmer队列
@@ -360,8 +358,6 @@ fstream * sort(char *filepath)
 
 	*/
 
-
-
 	// 验证radixsort正确性
 
 	/*ifstream fin1("D:\\radixsort.txt");
@@ -449,9 +445,9 @@ fstream * sort(char *filepath)
 /* filemerge BEGIN*/
 
 
-string pathprefix = "D:\\1\\";
+string pathprefix = "D:\\sorted\\";
 
-filemerge(1, 5, pathprefix);
+filemerge(1, 45, pathprefix);
 
 
 /* filemerge END*/
@@ -670,7 +666,7 @@ void  radixSort(vector<string>  * kmers,int num)
 
 
 	char buffer[20];
-	sprintf(buffer, "%d", num);
+	sprintf_s(buffer, "%d", num);
 
 	//std::cout << num << '\t' << buffer << endl;
 	string resultpath = "D:\\sorted\\" + string(buffer) + ".txt";
@@ -735,7 +731,7 @@ void filemerge(int index, int num,string pathprefix)
 	string *kmer = new string[num];//存储kmer
 	char ch[100];
 
-	sprintf(ch, "%d", index);
+	sprintf_s(ch, "%d", index);
 	
 	string filepath = pathprefix + "merged\\" + ch + ".txt";
 
@@ -744,8 +740,8 @@ void filemerge(int index, int num,string pathprefix)
 	//先打开文件
 	for (int i = 0; i < num; i++)
 	{
-		sprintf(ch, "%d", index++);
-		filepath = pathprefix + "merged\\" + ch + ".txt";
+		sprintf_s(ch, "%d", index++);
+		filepath = pathprefix + ch + ".txt";
 		fin[i].open(filepath);
 	}
 
