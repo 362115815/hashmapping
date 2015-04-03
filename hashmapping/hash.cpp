@@ -176,8 +176,6 @@ int kmerInsert(char kmer[], long curpos, CHashTable ht[])
 	}
 
 	subHT1 = subHT->pSubHT;
-
-
 	//获取后面7位存储地址
 	subHT1 = getpPos(subHT1, seq, 7);
 	if (!strcmp(subHT1->seq, ""))//若没有存储序列，则将序列存进去
@@ -445,12 +443,66 @@ fstream * sort(char *filepath)
 /* filemerge BEGIN*/
 
 
-string pathprefix = "D:\\sorted\\";
+///string pathprefix = "D:\\sorted\\";
 
-filemerge(1, 45, pathprefix);
+//filemerge(1, 45, pathprefix);
 
 
 /* filemerge END*/
+
+
+
+//统计kmer数量和kmer最大出现次数
+ifstream fin("D:\\kmer_ordered.txt");
+
+string s1;
+string s2;
+long kmernum = 0, maxcount = 0, count = 0,line=0;
+char ch[100];
+
+fin.getline(ch, 100);
+line++;
+s1 = ch;
+count++;
+kmernum++;
+while (fin.peek() != EOF)
+{
+	fin.getline(ch, 100);
+	line++;
+	s2 = ch;
+	while (fin.peek() != EOF)
+	{
+		if (s1.compare(0, 21, s2, 0, 21) == 0)
+		{
+			count++;
+			fin.getline(ch, 100);
+			line++;
+			s2 = ch;
+		}
+		else
+		{
+			
+			if (maxcount < count)
+			{
+				maxcount = count;
+				
+			}
+			s1 = s2;
+			count = 1;
+			kmernum++;
+			break;
+		}
+	}
+
+}
+cout << "line=" << line << endl;
+cout << "kmernum=" << kmernum << endl;
+cout << "maxcount=" << maxcount << endl;
+
+
+
+
+
 
 
 	return NULL;
@@ -820,10 +872,7 @@ void filemerge(int index, int num,string pathprefix)
 			}
 		}
 
-
 	}
-
-
 
 	fout.close();
 	for (int i = 0; i < num; i++)
