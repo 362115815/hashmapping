@@ -5,8 +5,10 @@
 #include "hash.h"
 #include<cmath>
 #include<ctime>
+#include <vector>
 #define N 16385
 #define M  1000
+#define H 67108864
 using namespace std;
 
 int main()
@@ -17,6 +19,7 @@ int main()
 	long start, finish;
 	double totaltime;
 	start = clock();
+
 
 
 	sort(filepath);

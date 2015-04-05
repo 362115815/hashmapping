@@ -57,3 +57,12 @@ void merge(vector<string> &kmers1, vector<string> &kmers2, vector<string> &kmers
 void  radixSort(vector<string>  * kmers, int num);
 long getradix(string s);
 void filemerge(int index, int num, string pathprefix);
+
+
+class hashindex{
+public:
+	char seq[14];
+	long pos;
+};
+
+

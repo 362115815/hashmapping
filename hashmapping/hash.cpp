@@ -453,7 +453,7 @@ fstream * sort(char *filepath)
 
 
 	//去除重复kmer，并把位置存下来
-	
+/*
 	ifstream fin("D:\\kmer_ordered.txt");
 	ofstream fout("D:\\kmer_unique.txt");
 	string s1;
@@ -510,25 +510,53 @@ fstream * sort(char *filepath)
 	fin.close();
 	fout.close();
 
-
-	
-
-	
+	*/
 
 
 		
+//测试两个索引序列之间最大间隔
+
+ifstream fin("D:\\kmer_unique.txt");
+string s1, s2;
+long maxlength = 0,count=0,line=0;
+getline(fin, s1);
+line++;
+count = 1;
+while (fin.peek() != EOF)
+{
+
+	getline(fin, s2);
+	line++;
+	while (fin.peek() != EOF)
+	{
+		if (s1.compare(0, 13, s2, 0, 13) == 0)
+		{
+
+			count++;
+			getline(fin, s2);
+			line++;
+		}
+		else
+		{
+			s1 = s2;
+			if (maxlength < count)
+			{
+				maxlength = count;
+			}
+			count = 1;
+			
+			break;
+		}
+	}
+
+
+}
+cout << "line=" << line << endl;
+cout << "maxlength=" << maxlength << endl;
 
 
 
-
-
-
-
-
-
-
-
-
+//cout << s1 << endl;
 
 
 
